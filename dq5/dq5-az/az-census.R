@@ -1,6 +1,7 @@
 library(shiny)
-library(tidyverse)
 library(tidycensus)
+library(tidyverse)
+
 
 # Import the helper functions in the main working file
 source('../helper-functions.R') #copy and paste whatever is inside of the helper function file
@@ -9,7 +10,7 @@ envfile <- "../.env"
 api_key <- get_key(envfile, "census_api_key")
 
 # Set census API key with census_api_key()
-census_api_key(api_key, install = TRUE)
+census_api_key(api_key,overwrite = TRUE, install = TRUE)
 
 # Reload environment so I can use the key without restarting R (first time only)
 readRenviron("~/.Renviron")
@@ -19,8 +20,6 @@ Sys.getenv("CENSUS_API_KEY")
 
 # Examine variables in 2019 1-year ACS data set
 v19 <- load_variables(2019, "acs1", cache = TRUE)
-
-View(v19)
 
 # Choose and rename variables of interest
 pop_vars <- c(total_pop = "B01001_001")
@@ -63,7 +62,7 @@ sex_vars <- c(male = 'B01001_002',
             female = 'B01001_026')
 
 
-age_vars <- c(gen_z = c('B01001_007','B01001_008','B01001_009','B01001_010', 'B01001_031', 'B01001_032','B01001_033','B01001_034'),
+age_vars_gen <- c(gen_z = c('B01001_007','B01001_008','B01001_009','B01001_010', 'B01001_031', 'B01001_032','B01001_033','B01001_034'),
               millen = c('B01001_011','B01001_012','B01001_013','B01001_035','B01001_036','B01001_037'),
               gen_x = c('B01001_014','B01001_015','B01001_016','B01001_038','B01001_039','B01001_040'),
               boomer = c('B01001_017','B01001_018','B01001_019','B01001_020','B01001_021','B01001_022','B01001_041','B01001_042','B01001_043','B01001_044','B01001_045','B01001_046'),
@@ -71,4 +70,96 @@ age_vars <- c(gen_z = c('B01001_007','B01001_008','B01001_009','B01001_010', 'B0
 
 )
 
+View(v19)
+#I want three data sets that have just my two variables: gender and age (age is grouped by generation when using PEW and decades when using example data)
+
+gender <- get_acs(
+    geography = 'county',
+    year = 2019,
+    survey = 'acs1',
+    state= 'TN',
+    variables= sex_vars
+)
+
+age <- get_acs(
+    geography = 'county',
+    year = 2019,
+    survey = 'acs1',
+    state= 'TN',
+    variables= age_vars_gen
+)
+
+#Let's drop the MOE (margin of error) column
+gender <- gender %>%
+    select(-moe)
+
+age <- age %>%
+    select(-moe)
+
+View(age)
+
+#I want to clean up age so that each generation/gender is grouped together
+
+gen_zm <- c('gen_z1','gen_z2', 'gen_z3', 'gen_z4')
+gen_zf <- c('gen_z5','gen_z6','gen_z7','gen_z8')
+
+millenm <- c('millen1','millen2','millen3')
+millenf <- c('millen4','millen5','millen6')
+
+gen_xm <- c('gen_x1','gen_x2', 'gen_x3')
+gen_xf <- c('gen_x4','gen_x5','gen_x6')
+
+boomerm <- c('boomer1','boomer2','boomer3','boomer4','boomer5','boomer6')
+boomerf <- c('boomer7','boomer8','boomer9','boomer10','boomer11','boomer12')
+
+silentm <- c('silent1','silent2','silent3')
+silentf <- c('silent4','silent5','silent6')
+
+#create a new column before group_by
+
+age <- age %>%
+    mutate(generation = case_when(
+        variable %in% gen_zm | variable %in% gen_zf ~ 'gen_z',
+        variable %in% millenm | variable %in% millenf ~ 'millen',
+        variable %in% gen_xm | variable %in% gen_xf ~ 'gen_x',
+        variable %in% boomerm | variable %in% boomerf ~ 'boomer',
+        variable %in% silentm | variable %in% silentf ~ 'silent'
+    ))
+
+
+#I learned i have to use %in% instead of == due to having multiple variables, am still working on this
+#Alexa: create data dictionary of each generation and what it corresponds to
+age %>%
+    group_by(NAME) %>%
+    filter(generation == 'gen_z') %>%
+    mutate(gen_z = sum(estimate))
+
+age %>%
+    group_by(NAME) %>%
+    filter(generation == 'millen') %>%
+    mutate(millen = sum(estimate))
+
+age %>%
+    group_by(NAME) %>%
+    filter(generation == 'gen_x') %>%
+    mutate(gen_x = sum(estimate))
+
+age %>%
+    group_by(NAME) %>%
+    filter(generation == 'boomer') %>%
+    mutate(boomer = sum(estimate))
+
+age %>%
+    group_by(NAME) %>%
+    filter(generation == 'silent') %>%
+    mutate(silent = sum(estimate))
+
+View(age)
+#Now I want to just look at Davidson County
+
+gender_Davidson <- gender %>%
+    filter(NAME=='Davidson County, Tennessee')
+
+age_Davidson <- age %>%
+    filter(NAME=='Davidson County, Tennessee')
 
