@@ -1,0 +1,26 @@
+#
+# This is the server logic of a Shiny web application. You can run the
+# application by clicking 'Run App' above.
+#
+# Find out more about building applications with Shiny here:
+#
+#    http://shiny.rstudio.com/
+#
+
+
+# Define server logic required to draw a histogram
+shinyServer(function(input, output) {
+
+    output$gender <- renderPlot({
+        gender_gg
+
+    })
+    output$generation <- renderPlot ({
+     gen_gg
+    })
+
+    output$decade <- renderPlot ({
+        decade_gg
+    })
+
+})
