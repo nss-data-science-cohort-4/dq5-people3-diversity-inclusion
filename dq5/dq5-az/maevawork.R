@@ -337,3 +337,9 @@ data_edulevels_bygender_summary_wide <- data_edulevels_bygender %>%
     ungroup() %>%
     adorn_totals("col")
 
+Davidson_edu <- data_edulevels_bygender %>%
+    filter(county == 'Davidson County') %>%
+    filter(edulevel != 'total') %>%
+    filter(gender != 'all')
+Davidson_edu %>% View()
+s

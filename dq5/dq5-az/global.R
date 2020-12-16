@@ -201,12 +201,12 @@ labels <- c('<20', '20-29','30-39','40-49','50-59','60+')
 dec_Davidson <- data.frame(labels,women,men)
 
 #don't like this graph, trying it with stacked bar chart
-decade_gg <- plot_ly(dec_Davidson, x=~labels, y=~women, type='bar', name='Female')
-decade_gg <- decade_gg %>% add_trace(y=~men, name='Male')
-decade_gg <- decade_gg %>%  layout (yaxis=list(title='Population'),
-                                    xaxis=list(title='Age grouping'),
-                                               barmode='stack')
-decade_gg
+# decade_gg <- plot_ly(dec_Davidson, x=~labels, y=~women, type='bar', name='Female')
+# decade_gg <- decade_gg %>% add_trace(y=~men, name='Male')
+# decade_gg <- decade_gg %>%  layout (yaxis=list(title='Population'),
+#                                     xaxis=list(title='Age grouping'),
+#                                                barmode='stack')
+# decade_gg
 
 
 #graphing for age by generation
@@ -220,16 +220,16 @@ decade_gg
 #hard coding the data frame because I can't figure out how to transform it to look like this:
 women_gen <- c(35048, 102428,59155,71551,20942)
 men_gen <- c(32147,93325,62732,61285,12477)
-generation <- c('Gen Z', 'Millennials', 'Gen X', 'Boomers', 'Silent')
+generation <- c('18-24 Gen Z', '25-39 Millennials', '40-54 Gen X', '55-73 Boomers', '74-91 Silent')
 
 gen_Davidsonmf <- data.frame(generation, women_gen, men_gen)
-
-gen_gg <- plot_ly(gen_Davidsonmf, x=~generation, y=~women_gen, type='bar', name='Female', color = I('#9C877B'))
-gen_gg <- gen_gg %>% add_trace(y=~men_gen, name='Male', color= I('#DCC5A8'))
-gen_gg <- gen_gg %>%  layout (yaxis=list(title='Population'),
-                                    xaxis=list(title='Age grouping'),
-                                    barmode='stack')
-gen_gg
+#
+# gen_gg <- plot_ly(gen_Davidsonmf, x=~generation, y=~women_gen, type='bar', name='Female', color = I('#9C877B'))
+# gen_gg <- gen_gg %>% add_trace(y=~men_gen, name='Male', color= I('#DCC5A8'))
+# gen_gg <- gen_gg %>%  layout (yaxis=list(title='Population'),
+#                                     xaxis=list(title='Age grouping'),
+#                                     barmode='stack')
+# gen_gg
 
 #need to adjust the colors and getting generation orders correct
 

@@ -23,11 +23,19 @@ shinyServer(function(input, output) {
 
     })
     output$generation <- renderPlotly({
-     gen_gg
+        gen_gg <- plot_ly(gen_Davidsonmf, x=~generation, y=~women_gen, type='bar', name='Female', color = I('#9C877B'))
+        gen_gg <- gen_gg %>% add_trace(y=~men_gen, name='Male', color= I('#DCC5A8'))
+        gen_gg <- gen_gg %>%  layout (yaxis=list(title='Population'),
+                                      xaxis=list(title='Age grouping'),
+                                      barmode='stack')
     })
 
     output$decade <- renderPlotly({
-        decade_gg
+        decade_gg <- plot_ly(dec_Davidson, x=~labels, y=~women, type='bar', name='Female',color = I('#9C877B'))
+        decade_gg <- decade_gg %>% add_trace(y=~men, name='Male',color= I('#DCC5A8'))
+        decade_gg <- decade_gg %>%  layout (yaxis=list(title='Population'),
+                                            xaxis=list(title='Age grouping'),
+                                            barmode='stack')
     })
 
 })
