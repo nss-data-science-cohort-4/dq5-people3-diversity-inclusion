@@ -234,4 +234,20 @@ gen_gg
 #need to adjust the colors and getting generation orders correct
 
 
-
+## Export df into CSV files
+csv_dest <- "./dq5"
+gen_Davidsonmf %>%
+    write.csv(
+        row.names = FALSE,
+        paste0(csv_dest,"generations_Davidson_mf.csv")
+    )
+dec_Davidson %>%
+    write.csv(
+        row.names = FALSE,
+        paste0(csv_dest,"decades_Davidson_mf.csv")
+    )
+gender_Davidson %>%
+    write.csv(
+        row.names = FALSE,
+        paste0(csv_dest,"gender_Davidson.csv")
+    )
