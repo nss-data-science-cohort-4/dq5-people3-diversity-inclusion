@@ -25,43 +25,6 @@ Sys.getenv("CENSUS_API_KEY")
 # Examine variables in 2019 1-year ACS data set
 v19 <- load_variables(2019, "acs1", cache = TRUE)
 
-# Choose and rename variables of interest
-pop_vars <- c(total_pop = "B01001_001")
-# B030002 is our race/ethnicity variable of choice for all data sets
-# B03002_012 represents all Hispanic or Latinx respondents, regardless of the
-# Race that they selected
-race_vars <- c(natv = "B03002_005",
-               paci = "B03002_007",
-               afam = "B03002_004",
-               hisp = "B03002_012",
-               asam = "B03002_006",
-               angl = "B03002_003",
-               mixd = "B03002_009",
-               othr = "B03002_008"
-)
-# C160001 is our language variable of choice for all data sets
-# Below are the top 5 non-English Languages spoken in TN based on the ACS5 2009-2013
-# Update these variables for the most recent 5-year census available (if desired) and
-# Update these variables for each state as needed
-lang_vars <- c(spanish = "C16001_003",
-               arabic = "C16001_033",
-               chinese = "C16001_021",
-               vietnamese = "C16001_024",
-               korean = "C16001_018",
-               english = "C16001_002"
-)
-# combine all variable categories into one list
-my_vars <- c(pop_vars, race_vars, lang_vars, sex_vars, age_vars)
-# Pull ACS 2019 1-year data for all counties in TN; specify Davidson+ counties after
-data_example <- get_acs(
-    geography = "county",
-    year = 2019,
-    survey = "acs1",
-    state = "TN",
-    variables = my_vars,
-    output = "wide"
-)
-
 sex_vars <- c(male = 'B01001_002',
             female = 'B01001_026')
 
@@ -74,7 +37,7 @@ age_vars_gen <- c(gen_z = c('B01001_007','B01001_008','B01001_009','B01001_010',
 
 )
 
-#I want three data sets that have just my two variables: gender and age (age is grouped by generation when using PEW and decades when using example data)
+#I want two data sets that have just my two variables: gender and age
 
 gender <- get_acs(
     geography = 'county',
@@ -117,7 +80,7 @@ boomerf <- c('boomer7','boomer8','boomer9','boomer10','boomer11','boomer12')
 silentm <- c('silent1','silent2','silent3')
 silentf <- c('silent4','silent5','silent6')
 
-#create a new column before group_by
+#create a new column with generation assigned
 
 age <- age %>%
     mutate(generation = case_when(
@@ -244,7 +207,6 @@ decade_gg <- decade_gg %>%  layout (yaxis=list(title='Population'),
                                     xaxis=list(title='Age grouping'),
                                                barmode='stack')
 decade_gg
-#need to adjust the colors and getting under20 to be at the beginning of the list
 
 
 #graphing for age by generation
