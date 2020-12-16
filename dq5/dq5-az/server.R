@@ -11,15 +11,22 @@
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
-    output$gender <- renderPlot({
-        gender_gg
+    output$gender <- renderPlotly({
+        gender_gg <- gender_Davidson %>%
+            plot_ly(labels= ~variable, values= ~estimate, marker = list(colors = c('#F6DDB6','#F0C37F')))
+        gender_gg<- gender_gg %>%
+            add_pie(hole=0.5)
+        gender_gg <- gender_gg %>%
+            layout(title='Male and Female Population',
+                   xaxis=list(showgrid=FALSE, zeroline= FALSE, showticklabels= FALSE),
+                   yaxis= list(showgrid=FALSE,zeroline=FALSE,showticklabels=FALSE))
 
     })
-    output$generation <- renderPlot ({
+    output$generation <- renderPlotly({
      gen_gg
     })
 
-    output$decade <- renderPlot ({
+    output$decade <- renderPlotly({
         decade_gg
     })
 

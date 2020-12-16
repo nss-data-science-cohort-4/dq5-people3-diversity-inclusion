@@ -73,7 +73,6 @@ age_vars_gen <- c(gen_z = c('B01001_007','B01001_008','B01001_009','B01001_010',
 
 )
 
-View(v19)
 #I want three data sets that have just my two variables: gender and age (age is grouped by generation when using PEW and decades when using example data)
 
 gender <- get_acs(
@@ -99,7 +98,6 @@ gender <- gender %>%
 age <- age %>%
     select(-moe)
 
-View(age)
 
 #I want to clean up age so that each generation/gender is grouped together
 
@@ -215,16 +213,15 @@ dec_Davidson <- decade_mf %>%
 #
 #
 #
-View(gender_Davidson)
-gender_gg <- gender_Davidson %>%
-    plot_ly(labels= ~variable, values= ~estimate)
-gender_gg<- gender_gg %>%
-    add_pie(hole=0.6)
-gender_gg <- gender_gg %>%
-    layout(title='Male and Female Population', showlegend= F,
-           xaxis=list(showgrid=FALSE, zeroline= FALSE, showticklabels= FALSE),
-           yaxis= list(showgrid=FALSE,zeroline=FALSE,showticklabels=FALSE))
-gender_gg
+# gender_gg <- gender_Davidson %>%
+#     plot_ly(labels= ~variable, values= ~estimate, marker = list(colors = c('#F6DDB6','#F0C37F')))
+# gender_gg<- gender_gg %>%
+#     add_pie(hole=0.5)
+# gender_gg <- gender_gg %>%
+#     layout(title='Male and Female Population',
+#            xaxis=list(showgrid=FALSE, zeroline= FALSE, showticklabels= FALSE),
+#            yaxis= list(showgrid=FALSE,zeroline=FALSE,showticklabels=FALSE))
+# gender_gg
 
 #graphing decade age with df dec_Davidson
 #
@@ -235,20 +232,9 @@ gender_gg
 #hard coding the data frame because I can't figure out how to transform it to look like this:
 women <- c(60947,345211,329122,305092,308717,559222)
 men <- c(66397,334193,313213,292953,285526, 442691)
-labels <- c('under 20', '20-29','30-39','40-49','50-59','above 60')
+labels <- c('<20', '20-29','30-39','40-49','50-59','60+')
 
 dec_Davidson <- data.frame(labels,women,men)
-
-#dumbbell plot
-decade_gg <- plot_ly(dec_Davidson, x= ~women, y=~labels, name='Women', type= 'scatter',
-               mode='markers', marker = list(color='pink'))
-decade_gg <- decade_gg %>% add_trace(x = ~men, y=~labels, name='Men',type='scatter',
-                         mode='markers', marker=list(color='blue'))
-decade_gg <- decage_gg %>% layout(
-    title='Male and Female population by Age',
-    xaxis = list(title='Population')
-)
-decade_gg
 
 #don't like this graph, trying it with stacked bar chart
 decade_gg <- plot_ly(dec_Davidson, x=~labels, y=~women, type='bar', name='Female')
@@ -268,7 +254,6 @@ decade_gg
 #
 #
 #
-View(gen_Davidsonmf)
 #hard coding the data frame because I can't figure out how to transform it to look like this:
 women_gen <- c(35048, 102428,59155,71551,20942)
 men_gen <- c(32147,93325,62732,61285,12477)
@@ -276,12 +261,11 @@ generation <- c('Gen Z', 'Millennials', 'Gen X', 'Boomers', 'Silent')
 
 gen_Davidsonmf <- data.frame(generation, women_gen, men_gen)
 
-gen_gg <- plot_ly(gen_Davidsonmf, x=~generation, y=~women_gen, type='bar', name='Female')
-gen_gg <- gen_gg %>% add_trace(y=~men_gen, name='Male')
+gen_gg <- plot_ly(gen_Davidsonmf, x=~generation, y=~women_gen, type='bar', name='Female', color = I('#9C877B'))
+gen_gg <- gen_gg %>% add_trace(y=~men_gen, name='Male', color= I('#DCC5A8'))
 gen_gg <- gen_gg %>%  layout (yaxis=list(title='Population'),
                                     xaxis=list(title='Age grouping'),
                                     barmode='stack')
 gen_gg
 
 #need to adjust the colors and getting generation orders correct
-
