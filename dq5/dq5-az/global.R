@@ -3,6 +3,7 @@ library(tidycensus)
 library(tidyverse)
 library(plotly)
 library(shiny)
+library(janitor)
 
 
 
@@ -269,3 +270,6 @@ gen_gg <- gen_gg %>%  layout (yaxis=list(title='Population'),
 gen_gg
 
 #need to adjust the colors and getting generation orders correct
+
+
+
