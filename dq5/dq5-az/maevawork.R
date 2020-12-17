@@ -357,12 +357,14 @@ education <- education %>% scale_x_discrete(labels = c('White',
 education
 
 csv_dest <- "./dq5"
-data_edulevels_bygender_summary_wide %>%
+data_edulevels_bygender_summary_long %>%
     write.csv(
     row.names = FALSE,
-    paste0(csv_dest,"education_levels.csv")
+    paste0(csv_dest,"education_level.csv")
 )
 
 #rename columns in final data set (using the long one) to the same names given in example data.
 #download correct data into csv and send to maeva.
 #add plot data into server side and push to git
+
+

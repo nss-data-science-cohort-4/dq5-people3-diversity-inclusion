@@ -24,6 +24,7 @@ shinyUI(fluidPage(
         mainPanel(
             plotlyOutput('generation'),
             plotlyOutput('decade')
+            plotlyOutput('education')
         )
     )
 ))

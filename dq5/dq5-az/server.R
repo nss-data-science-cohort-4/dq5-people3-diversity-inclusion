@@ -37,5 +37,12 @@ shinyServer(function(input, output) {
                                             xaxis=list(title='Age grouping'),
                                             barmode='stack')
     })
+    output$education <- renderPlotly({
+        education <- plot_ly(data_edulevels_bygender_summary_long, x=~edulevel, y=~female, type='bar', name='Female', color = I('#9C877B'))
+        education <- education %>% add_trace(y=~male, name='Male', color= I('#DCC5A8'))
+        education <- education %>%  layout (yaxis=list(title='Population'),
+                                            xaxis=list(title='Education Level'),
+                                            barmode='stack')
+    })
 
 })
