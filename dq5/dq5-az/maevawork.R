@@ -312,17 +312,18 @@ data_edu_bygenderandrace <- data_edu_bygenderandrace %>%
 # Here, we are going to match the exports to contain the same data
 # as the example profile excel, both in a wide and long format
 data_edulevels_bygender_summary_long <- data_edulevels_bygender %>%
-    filter(edulevel != "total") %>%
+    filter(edulevel != "total", county == 'Davidson County') %>%
     group_by(edulevel) %>%
     summarise(
         male=sum(estimate[gender=="male"], na.rm=TRUE),
         female=sum(estimate[gender=="female"], na.rm=TRUE)
     ) %>%
-    ungroup() %>%
-    adorn_totals("row")
+    ungroup() #%>%
+    # adorn_totals("row") %>%
+    # select(-Total)
 
 data_edulevels_bygender_summary_wide <- data_edulevels_bygender %>%
-    filter(edulevel != "total") %>%
+    filter(edulevel != "total", county == 'Davidson County') %>%
     group_by(gender) %>%
     summarise(
         noschool=sum(estimate[edulevel=="noschool"], na.rm=TRUE),
@@ -335,11 +336,33 @@ data_edulevels_bygender_summary_wide <- data_edulevels_bygender %>%
         doctor=sum(estimate[edulevel=="doctor"], na.rm=TRUE),
     ) %>%
     ungroup() %>%
-    adorn_totals("col")
+    adorn_totals("col") %>%
+    select(-Total)
 
-Davidson_edu <- data_edulevels_bygender %>%
-    filter(county == 'Davidson County') %>%
-    filter(edulevel != 'total') %>%
-    filter(gender != 'all')
-Davidson_edu %>% View()
-s
+data_edulevels_bygender_summary_long %>% View()
+
+education <- plot_ly(data_edulevels_bygender_summary_long, x=~edulevel, y=~female, type='bar', name='Female', color = I('#9C877B'))
+education <- education %>% add_trace(y=~male, name='Male', color= I('#DCC5A8'))
+education <- education %>%  layout (yaxis=list(title='Population'),
+                              xaxis=list(title='Education Level'),
+                              barmode='stack')
+education <- education %>% scale_x_discrete(labels = c('White',
+                                                       'African American',
+                                                       'Asian American',
+                                                       'Other',
+                                                       'Multiracial',
+                                                       'Native American',
+                                                       'Pacific Islander'))
+
+education
+
+csv_dest <- "./dq5"
+data_edulevels_bygender_summary_wide %>%
+    write.csv(
+    row.names = FALSE,
+    paste0(csv_dest,"education_levels.csv")
+)
+
+#rename columns in final data set (using the long one) to the same names given in example data.
+#download correct data into csv and send to maeva.
+#add plot data into server side and push to git
