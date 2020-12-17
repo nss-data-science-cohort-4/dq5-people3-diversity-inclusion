@@ -23,7 +23,7 @@ shinyUI(fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
             plotlyOutput('generation'),
-            plotlyOutput('decade')
+            plotlyOutput('decade'),
             plotlyOutput('education')
         )
     )
